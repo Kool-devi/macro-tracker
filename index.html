@@ -3,147 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Macro Tracker V2</title>
-    <style>
-        /* --- CORE STYLES --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            padding: 15px;
-            padding-bottom: 80px; /* Space for bottom nav */
-        }
-        
-        /* --- UTILS --- */
-        .hidden { display: none !important; }
-        .btn {
-            background-color: #3b82f6;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .btn-green { background-color: #22c55e; }
-        .btn-red { background-color: #ef4444; }
-
-        /* --- HEADER & BARS (Tracker View) --- */
-        .header {
-            position: sticky;
-            top: 0;
-            background-color: #121212;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #333;
-            margin-bottom: 15px;
-            z-index: 90;
-        }
-        h1 { margin-bottom: 10px; color: #60a5fa; text-align: center; font-size: 20px; }
-        
-        .macro-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .macro-box {
-            background-color: #1e1e1e;
-            padding: 8px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid #333;
-        }
-        .label { font-size: 10px; color: #aaa; text-transform: uppercase; }
-        .value { font-size: 14px; font-weight: bold; margin: 4px 0; }
-        
-        .bar-bg { width: 100%; height: 5px; background-color: #333; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; width: 0%; transition: width 0.3s ease; }
-        .bar-p { background-color: #3b82f6; }
-        .bar-c { background-color: #22c55e; }
-        .bar-f { background-color: #eab308; }
-        
-        /* --- LISTS (Tracker View) --- */
-        .ingredient-item {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .ing-info h3 { font-size: 15px; margin-bottom: 2px; }
-        .ing-info p { font-size: 11px; color: #888; }
-        
-        .input-group { display: flex; align-items: center; gap: 5px; }
-        .input-track {
-            width: 55px;
-            padding: 8px;
-            background-color: #2d2d2d;
-            border: 1px solid #444;
-            color: white;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 16px;
-        }
-        .unit { font-size: 11px; color: #888; width: 25px; text-align: right; }
-        
-        /* --- EDITOR VIEW STYLES --- */
-        .editor-card {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-        }
-        .edit-row { display: flex; justify-content: space-between; margin-bottom: 10px; align-items: center; }
-        .edit-row label { font-size: 12px; color: #aaa; width: 40px; }
-        .edit-input {
-            background-color: #2d2d2d;
-            border: 1px solid #444;
-            color: white;
-            padding: 6px;
-            border-radius: 4px;
-            width: 100%;
-        }
-        .small-input { width: 60px; text-align: center; }
-
-        /* --- BOTTOM NAV --- */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #0f0f0f;
-            border-top: 1px solid #333;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px;
-            z-index: 100;
-        }
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #666;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            width: 50%;
-        }
-        .nav-btn.active { color: #3b82f6; }
-        .nav-icon { font-size: 20px; }
-
-        /* HIGHLIGHTS */
-        .hit { color: #4ade80; }
-        .bg-hit { background-color: #4ade80; }
-    </style>
+    <title>Macro Tracker V3</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="view-tracker">
         <div class="header">
-            <h1>Today's Macros</h1>
+            <h1>Daily Progress</h1>
             <div class="macro-grid">
                 <div class="macro-box">
                     <div class="label">Protein</div>
@@ -162,7 +29,7 @@
                 </div>
             </div>
             <div style="text-align: center; margin-top: 10px;">
-                 <button onclick="resetDaily()" class="btn btn-red" style="font-size: 11px; padding: 5px 10px;">Reset Day</button>
+                 <button id="btn-reset-day" class="btn btn-red" style="font-size: 12px; padding: 6px 15px;">Reset Day</button>
             </div>
         </div>
         <div id="tracker-list"></div>
@@ -171,213 +38,25 @@
     <div id="view-editor" class="hidden">
         <div class="header">
             <h1>Edit Ingredients</h1>
-            <p style="color: #888; text-align: center; font-size: 12px;">Modify macros per unit. Changes save automatically.</p>
+            <p style="color: #888; text-align: center; font-size: 12px;">Changes save automatically.</p>
         </div>
         <div id="editor-list"></div>
         <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-            <button onclick="resetDefaults()" class="btn btn-red">Reset All to Defaults</button>
+            <button id="btn-reset-db" class="btn btn-red">Reset Database</button>
         </div>
     </div>
 
     <div class="nav-bar">
-        <button class="nav-btn active" id="nav-track" onclick="switchView('tracker')">
+        <button class="nav-btn active" id="nav-track">
             <span class="nav-icon">📊</span>
             TRACK
         </button>
-        <button class="nav-btn" id="nav-edit" onclick="switchView('editor')">
+        <button class="nav-btn" id="nav-edit">
             <span class="nav-icon">⚙️</span>
             EDIT DB
         </button>
     </div>
 
-    <script>
-        // --- DEFAULTS ---
-        const defaultTargets = { p: 150, c: 350, f: 75 };
-        const defaultIngredients = [
-            { name: "Protein Powder", p: 27, c: 3, f: 2, unit: "scp", per: 1 },
-            { name: "Paneer", p: 20, c: 3, f: 22, unit: "g", per: 100 },
-            { name: "Eggs", p: 6, c: 0.5, f: 5, unit: "egg", per: 1 },
-            { name: "Split Peas (Dry)", p: 24, c: 60, f: 1, unit: "g", per: 100 },
-            { name: "Protein Bread", p: 7, c: 12, f: 1.5, unit: "slc", per: 1 },
-            { name: "Milk", p: 8, c: 12, f: 5, unit: "ml", per: 250 },
-            { name: "Oats", p: 6, c: 27, f: 3, unit: "g", per: 40 },
-            { name: "Pasta (Dry)", p: 12, c: 72, f: 2, unit: "g", per: 100 },
-            { name: "Brown Rice (Dry)", p: 8, c: 75, f: 2.5, unit: "g", per: 100 },
-            { name: "Yogurt", p: 4, c: 5, f: 3, unit: "g", per: 100 },
-            { name: "Peanut Butter", p: 4, c: 3, f: 8, unit: "tbsp", per: 1 },
-            { name: "Blueberries", p: 1, c: 14, f: 0, unit: "g", per: 100 },
-            { name: "Veggies Mix", p: 2, c: 5, f: 0, unit: "g", per: 100 },
-            { name: "Ice Cream", p: 4, c: 24, f: 11, unit: "g", per: 100 }
-        ];
-
-        // --- STATE ---
-        let ingredients = [];
-        let dailyValues = {}; // Stores how much you ate today: { index: amount }
-
-        // --- INIT ---
-        function init() {
-            // Load Ingredients from Memory or use Default
-            const savedIng = localStorage.getItem('my_ingredients_v2');
-            ingredients = savedIng ? JSON.parse(savedIng) : JSON.parse(JSON.stringify(defaultIngredients));
-            
-            // Render Both Views
-            renderTracker();
-            renderEditor();
-        }
-
-        // --- RENDER TRACKER ---
-        function renderTracker() {
-            const list = document.getElementById('tracker-list');
-            list.innerHTML = '';
-            
-            ingredients.forEach((item, idx) => {
-                const val = dailyValues[idx] || ''; // Retrieve saved daily value or empty
-                list.innerHTML += `
-                    <div class="ingredient-item">
-                        <div class="ing-info">
-                            <h3>${item.name}</h3>
-                            <p>P:${item.p} C:${item.c} F:${item.f} <span style="color:#555">/ ${item.per}${item.unit}</span></p>
-                        </div>
-                        <div class="input-group">
-                            <input type="number" 
-                                   class="input-track" 
-                                   id="track-in-${idx}" 
-                                   value="${val}" 
-                                   placeholder="0" 
-                                   oninput="updateCalculation(${idx}, this.value)">
-                            <span class="unit">${item.unit}</span>
-                        </div>
-                    </div>
-                `;
-            });
-            recalcTotals(); // Run calc on load
-        }
-
-        // --- RENDER EDITOR ---
-        function renderEditor() {
-            const list = document.getElementById('editor-list');
-            list.innerHTML = '';
-
-            ingredients.forEach((item, idx) => {
-                list.innerHTML += `
-                    <div class="editor-card">
-                        <div class="edit-row">
-                            <input type="text" class="edit-input" style="font-weight:bold; color:#60a5fa" 
-                                   value="${item.name}" onchange="editItem(${idx}, 'name', this.value)">
-                        </div>
-                        <div class="edit-row">
-                            <label>Prot</label>
-                            <input type="number" class="edit-input small-input" value="${item.p}" onchange="editItem(${idx}, 'p', this.value)">
-                            <label style="margin-left:10px">Carb</label>
-                            <input type="number" class="edit-input small-input" value="${item.c}" onchange="editItem(${idx}, 'c', this.value)">
-                            <label style="margin-left:10px">Fat</label>
-                            <input type="number" class="edit-input small-input" value="${item.f}" onchange="editItem(${idx}, 'f', this.value)">
-                        </div>
-                        <div class="edit-row">
-                            <label>Per</label>
-                            <input type="number" class="edit-input small-input" value="${item.per}" onchange="editItem(${idx}, 'per', this.value)">
-                            <label style="margin-left:10px">Unit</label>
-                            <input type="text" class="edit-input small-input" value="${item.unit}" onchange="editItem(${idx}, 'unit', this.value)">
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // --- LOGIC: TRACKER ---
-        function updateCalculation(idx, value) {
-            dailyValues[idx] = value;
-            recalcTotals();
-        }
-
-        function recalcTotals() {
-            let totalP = 0, totalC = 0, totalF = 0;
-
-            ingredients.forEach((item, idx) => {
-                const inputVal = parseFloat(dailyValues[idx]) || 0;
-                if (inputVal > 0) {
-                    const ratio = inputVal / item.per;
-                    totalP += item.p * ratio;
-                    totalC += item.c * ratio;
-                    totalF += item.f * ratio;
-                }
-            });
-
-            updateUI('p', totalP, defaultTargets.p);
-            updateUI('c', totalC, defaultTargets.c);
-            updateUI('f', totalF, defaultTargets.f);
-        }
-
-        function updateUI(type, current, max) {
-            const disp = document.getElementById(`disp-${type}`);
-            const bar = document.getElementById(`bar-${type}`);
-            
-            disp.innerText = Math.round(current) + "/" + max + "g";
-            const pct = Math.min((current / max) * 100, 100);
-            bar.style.width = pct + "%";
-
-            if(current >= max) {
-                disp.classList.add('hit');
-                bar.classList.add('bg-hit');
-            } else {
-                disp.classList.remove('hit');
-                bar.classList.remove('bg-hit');
-            }
-        }
-
-        function resetDaily() {
-            if(confirm("Clear all today's entries?")) {
-                dailyValues = {};
-                renderTracker();
-            }
-        }
-
-        // --- LOGIC: EDITOR ---
-        function editItem(idx, field, value) {
-            // Update Data
-            if (field === 'name' || field === 'unit') {
-                ingredients[idx][field] = value;
-            } else {
-                ingredients[idx][field] = parseFloat(value) || 0;
-            }
-            
-            // Save to Local Storage
-            localStorage.setItem('my_ingredients_v2', JSON.stringify(ingredients));
-            
-            // Re-render Tracker (in background) so it's ready when we switch back
-            renderTracker(); 
-        }
-
-        function resetDefaults() {
-            if(confirm("Reset all ingredient data to original defaults?")) {
-                localStorage.removeItem('my_ingredients_v2');
-                init();
-            }
-        }
-
-        // --- VIEW SWITCHING ---
-        function switchView(viewName) {
-            const trackView = document.getElementById('view-tracker');
-            const editView = document.getElementById('view-editor');
-            const navTrack = document.getElementById('nav-track');
-            const navEdit = document.getElementById('nav-edit');
-
-            if (viewName === 'tracker') {
-                trackView.classList.remove('hidden');
-                editView.classList.add('hidden');
-                navTrack.classList.add('active');
-                navEdit.classList.remove('active');
-            } else {
-                trackView.classList.add('hidden');
-                editView.classList.remove('hidden');
-                navTrack.classList.remove('active');
-                navEdit.classList.add('active');
-            }
-        }
-
-        // Start App
-        init();
-
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
