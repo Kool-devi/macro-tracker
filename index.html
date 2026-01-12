@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Macro Tracker V3</title>
+    <title>Macro Tracker V4</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -37,12 +37,33 @@
 
     <div id="view-editor" class="hidden">
         <div class="header">
-            <h1>Edit Ingredients</h1>
-            <p style="color: #888; text-align: center; font-size: 12px;">Changes save automatically.</p>
+            <h1>Manage Database</h1>
+            
+            <button id="btn-toggle-add" class="btn btn-blue-outline w-full mb-3">+ Add New Ingredient</button>
+            
+            <div id="add-form" class="hidden mb-4 p-3 bg-slate-800 rounded-lg border border-slate-700">
+                <h3 class="text-sm font-bold text-blue-400 mb-2">New Item Details</h3>
+                <input type="text" id="new-name" placeholder="Item Name (e.g. Bison)" class="edit-input mb-2">
+                
+                <div class="grid-3 mb-2">
+                    <div><label class="text-xs">Prot</label><input type="number" id="new-p" class="edit-input" placeholder="0"></div>
+                    <div><label class="text-xs">Carb</label><input type="number" id="new-c" class="edit-input" placeholder="0"></div>
+                    <div><label class="text-xs">Fat</label><input type="number" id="new-f" class="edit-input" placeholder="0"></div>
+                </div>
+
+                <div class="grid-2 mb-3">
+                    <div><label class="text-xs">Per Amount</label><input type="number" id="new-per" class="edit-input" value="100"></div>
+                    <div><label class="text-xs">Unit Name</label><input type="text" id="new-unit" class="edit-input" value="g"></div>
+                </div>
+
+                <button id="btn-save-new" class="btn btn-green w-full">Save to Database</button>
+            </div>
         </div>
+
         <div id="editor-list"></div>
+        
         <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-            <button id="btn-reset-db" class="btn btn-red">Reset Database</button>
+            <button id="btn-reset-db" class="btn btn-red">Reset Defaults</button>
         </div>
     </div>
 
