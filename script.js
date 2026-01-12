@@ -23,12 +23,10 @@ let dailyValues = {};
 
 // --- INIT ---
 function init() {
-    // 1. Load Ingredients Database
-    const savedIng = localStorage.getItem('my_ingredients_v3');
+    const savedIng = localStorage.getItem('my_ingredients_v4');
     ingredients = savedIng ? JSON.parse(savedIng) : JSON.parse(JSON.stringify(defaultIngredients));
     
-    // 2. Load Daily Progress
-    const savedDaily = localStorage.getItem('my_daily_progress_v3');
+    const savedDaily = localStorage.getItem('my_daily_progress_v4');
     dailyValues = savedDaily ? JSON.parse(savedDaily) : {};
 
     renderTracker();
@@ -43,7 +41,6 @@ function renderTracker() {
     
     ingredients.forEach((item, idx) => {
         const val = dailyValues[idx] || ''; 
-        // Create elements properly to avoid inline event string issues
         const itemDiv = document.createElement('div');
         itemDiv.className = 'ingredient-item';
         itemDiv.innerHTML = `
@@ -61,8 +58,8 @@ function renderTracker() {
             </div>
         `;
         list.appendChild(itemDiv);
-
-        // Add event listener manually
+        
+        // Listen for input changes
         const input = document.getElementById(`track-in-${idx}`);
         input.addEventListener('input', (e) => updateCalculation(idx, e.target.value));
     });
@@ -80,6 +77,7 @@ function renderEditor() {
         card.innerHTML = `
             <div class="edit-row">
                 <input type="text" class="edit-input name-input" style="font-weight:bold; color:#60a5fa" value="${item.name}">
+                <button class="btn-trash" title="Delete Item">✕</button>
             </div>
             <div class="edit-row">
                 <label>Prot</label>
@@ -98,20 +96,23 @@ function renderEditor() {
         `;
         list.appendChild(card);
 
-        // Attach listeners for this card
+        // Attach listeners
         card.querySelector('.name-input').addEventListener('change', (e) => editItem(idx, 'name', e.target.value));
         card.querySelector('.p-input').addEventListener('change', (e) => editItem(idx, 'p', e.target.value));
         card.querySelector('.c-input').addEventListener('change', (e) => editItem(idx, 'c', e.target.value));
         card.querySelector('.f-input').addEventListener('change', (e) => editItem(idx, 'f', e.target.value));
         card.querySelector('.per-input').addEventListener('change', (e) => editItem(idx, 'per', e.target.value));
         card.querySelector('.unit-input').addEventListener('change', (e) => editItem(idx, 'unit', e.target.value));
+        
+        // Delete button
+        card.querySelector('.btn-trash').addEventListener('click', () => deleteItem(idx));
     });
 }
 
 // --- LOGIC: TRACKER ---
 function updateCalculation(idx, value) {
     dailyValues[idx] = value;
-    localStorage.setItem('my_daily_progress_v3', JSON.stringify(dailyValues));
+    localStorage.setItem('my_daily_progress_v4', JSON.stringify(dailyValues));
     recalcTotals();
 }
 
@@ -153,7 +154,7 @@ function updateUI(type, current, max) {
 function resetDaily() {
     if(confirm("Start a new day? (This clears your progress)")) {
         dailyValues = {};
-        localStorage.removeItem('my_daily_progress_v3'); 
+        localStorage.removeItem('my_daily_progress_v4'); 
         renderTracker();
     }
 }
@@ -165,13 +166,53 @@ function editItem(idx, field, value) {
     } else {
         ingredients[idx][field] = parseFloat(value) || 0;
     }
-    localStorage.setItem('my_ingredients_v3', JSON.stringify(ingredients));
+    saveIngredients();
     renderTracker(); 
+}
+
+function deleteItem(idx) {
+    if(confirm(`Delete "${ingredients[idx].name}"?`)) {
+        ingredients.splice(idx, 1);
+        // Important: Reset daily values because indices shifted
+        dailyValues = {};
+        localStorage.removeItem('my_daily_progress_v4');
+        saveIngredients();
+        renderEditor();
+        renderTracker();
+    }
+}
+
+function addNewItem() {
+    const name = document.getElementById('new-name').value;
+    const p = parseFloat(document.getElementById('new-p').value) || 0;
+    const c = parseFloat(document.getElementById('new-c').value) || 0;
+    const f = parseFloat(document.getElementById('new-f').value) || 0;
+    const per = parseFloat(document.getElementById('new-per').value) || 100;
+    const unit = document.getElementById('new-unit').value || 'g';
+
+    if(!name) { alert("Please enter a name"); return; }
+
+    ingredients.unshift({ name, p, c, f, per, unit }); // Add to top of list
+    saveIngredients();
+    
+    // Clear form
+    document.getElementById('new-name').value = '';
+    document.getElementById('new-p').value = '';
+    document.getElementById('new-c').value = '';
+    document.getElementById('new-f').value = '';
+    document.getElementById('add-form').classList.add('hidden');
+    
+    renderEditor();
+    renderTracker();
+}
+
+function saveIngredients() {
+    localStorage.setItem('my_ingredients_v4', JSON.stringify(ingredients));
 }
 
 function resetDefaults() {
     if(confirm("Reset entire ingredient database to defaults?")) {
-        localStorage.removeItem('my_ingredients_v3');
+        localStorage.removeItem('my_ingredients_v4');
         init();
     }
 }
@@ -202,6 +243,14 @@ function setupListeners() {
     document.getElementById('nav-edit').addEventListener('click', () => switchView('editor'));
     document.getElementById('btn-reset-day').addEventListener('click', resetDaily);
     document.getElementById('btn-reset-db').addEventListener('click', resetDefaults);
+    
+    // Toggle Add Form
+    document.getElementById('btn-toggle-add').addEventListener('click', () => {
+        document.getElementById('add-form').classList.toggle('hidden');
+    });
+    
+    // Save New Item
+    document.getElementById('btn-save-new').addEventListener('click', addNewItem);
 }
 
 // Start App
