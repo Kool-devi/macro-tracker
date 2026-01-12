@@ -5,23 +5,56 @@ body {
     color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     padding: 15px;
-    padding-bottom: 90px; /* Space for bottom nav */
+    padding-bottom: 90px;
 }
 
 /* --- UTILS --- */
 .hidden { display: none !important; }
+.w-full { width: 100%; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.text-xs { font-size: 10px; color: #aaa; text-transform: uppercase; }
+.text-sm { font-size: 14px; }
+.bg-slate-800 { background-color: #1e293b; }
+.border-slate-700 { border-color: #334155; }
+.rounded-lg { border-radius: 8px; }
+.p-3 { padding: 12px; }
+
+/* --- GRIDS --- */
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* --- BUTTONS --- */
 .btn {
-    background-color: #3b82f6;
-    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: bold;
     font-size: 14px;
     cursor: pointer;
+    text-align: center;
 }
-.btn-green { background-color: #22c55e; }
-.btn-red { background-color: #ef4444; }
+.btn-green { background-color: #22c55e; color: white; }
+.btn-red { background-color: #ef4444; color: white; }
+.btn-blue-outline { 
+    background-color: transparent; 
+    border: 1px dashed #3b82f6; 
+    color: #60a5fa; 
+}
+.btn-trash {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer;
+}
 
 /* --- HEADER & BARS --- */
 .header {
@@ -93,9 +126,10 @@ h1 { margin-bottom: 10px; color: #60a5fa; text-align: center; font-size: 20px; }
     background-color: #2d2d2d;
     border: 1px solid #444;
     color: white;
-    padding: 6px;
+    padding: 8px;
     border-radius: 4px;
     width: 100%;
+    color: white;
 }
 .small-input { width: 60px; text-align: center; }
 
